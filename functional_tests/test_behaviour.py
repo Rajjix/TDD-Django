@@ -1,19 +1,23 @@
+import os
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
-from django.test import LiveServerTestCase
 from selenium import webdriver
 import time
 
 # maximum time waited before declaring failure.
 MAX_WAIT = 10
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
     
     def setUp(self):
         """
         Test Start actions.
         """
         self.browser = webdriver.Firefox()
+        staging_server = os.environ.get('STAGING_SERVER')
+        if staging_server:
+            self.live_server_url = 'http://' + staging_server
 
     def tearDown(self):
         """
@@ -58,7 +62,6 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys('Use peacock feathers to make a fly')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_list_table('2: Use peacock feathers to make a fly')
-
     def test_multiple_users_can_start_lists_at_different_urls(self):
         # Check that edith has a unique url for his list
         self.browser.get(self.live_server_url)
@@ -68,10 +71,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.wait_for_row_list_table('1: Buy peacock feathers')
         edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')
-        self.browser.quit()
-        
         # Check that francis got a unique url for his list
-        self.browser = webdriver.Firefox()
         self.browser.get(self.live_server_url)
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy milk')
@@ -80,8 +80,16 @@ class NewVisitorTest(LiveServerTestCase):
         francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.+')
         self.assertNotEqual(francis_list_url, edith_list_url)
-
         # Check that edith items did not appear in francis's item list
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
 
+    def test_layout_and_styling(self):
+        self.browser.get(self.live_server_url)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.browser.set_window_size(1240, 768)
+        self.assertAlmostEqual(
+                inputbox.location['x'] + inputbox.size['width']/2,
+                620,
+                delta=20
+                )

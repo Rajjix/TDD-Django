@@ -6,6 +6,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
 SECRET_KEY = '3(9_614jdm*j355(u((538(y6k5t7rmma(j6rx351n(6g6nhzh'
 
@@ -14,7 +15,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+#    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

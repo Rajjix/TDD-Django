@@ -1,0 +1,13 @@
+body {
+  padding-top: 50px;
+  background-color: #099;
+}
+#id_new_item {
+  margin-top: 2ex;
+}
+
+table {
+  font-size:20px;
+  font-weight:700;
+  font-style: italic;
+}
