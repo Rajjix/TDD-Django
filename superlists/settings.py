@@ -1,7 +1,6 @@
 """
 Django 2.1.3.
 """
-
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
